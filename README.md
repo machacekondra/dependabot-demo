@@ -16,6 +16,24 @@ Dependabot :dependabot:!
 The repository includes dependency examples for Python (`python/`) and Java
 (`java/`). Dependabot checks both projects weekly for dependency updates.
 
+### Security updates that need code changes
+
+These two intentionally vulnerable examples let you try a security update that
+also needs an application-code migration. The sample inputs are local and
+harmless; do not use these pinned dependency versions or parsing patterns in a
+production application.
+
+| Project | Vulnerable dependency | Security fix | Example code migration |
+| --- | --- | --- | --- |
+| Python | PyJWT 1.7.1 (`CVE-2022-29217`) | PyJWT 2.4.0 | `jwt.encode()` now returns text, so remove `.decode("utf-8")`; `jwt.decode()` also needs an explicit algorithm allowlist. |
+| Java | SnakeYAML 1.33 (`CVE-2022-1471`) | SnakeYAML 2.0 | Pass `LoaderOptions` to the `Constructor` when creating the YAML parser. |
+
+The vulnerable versions are pinned in `python/requirements.txt` and
+`java/pom.xml`; the example call sites are in `python/example.py` and
+`java/src/main/java/com/github/dependabot/DemoConfig.java`. Enable Dependabot
+alerts and security updates to create the alerts and dependency-update PRs, then
+assign an alert to Lightwell to demonstrate the source-code migration.
+
 ### Enabling Security Updates
 
 - In your fork, click the **Settings** tab
