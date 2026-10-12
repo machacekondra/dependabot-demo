@@ -11,6 +11,12 @@
 This repo contains some projects with outdated dependencies. Fork it to try out
 Dependabot :dependabot:!
 
+### Example projects
+
+The repository includes dependency examples for JavaScript (`javascript/`), Ruby
+(`ruby/`), Python (`python/`), and Java (`java/`). Dependabot checks each project
+weekly for dependency updates.
+
 ### Enabling Security Updates
 
 - In your fork, click the **Settings** tab

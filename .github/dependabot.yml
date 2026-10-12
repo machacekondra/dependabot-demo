@@ -13,3 +13,11 @@ updates:
     directory: "/ruby"
     schedule:
       interval: "weekly"
+  - package-ecosystem: pip
+    directory: "/python"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: maven
+    directory: "/java"
+    schedule:
+      interval: "weekly"
