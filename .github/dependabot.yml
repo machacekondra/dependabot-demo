@@ -17,6 +17,7 @@ updates:
     directory: "/python"
     registries:
       - lightwell-python
+    insecure-external-code-execution: allow
     schedule:
       interval: "weekly"
   - package-ecosystem: maven
