@@ -15,6 +15,7 @@ registries:
 updates:
   - package-ecosystem: pip
     directory: "/python"
+    open-pull-requests-limit: 0
     registries:
       - lightwell-python
     insecure-external-code-execution: allow
@@ -22,6 +23,7 @@ updates:
       interval: "weekly"
   - package-ecosystem: maven
     directory: "/java"
+    open-pull-requests-limit: 0
     registries:
       - lightwell-maven
     schedule:
