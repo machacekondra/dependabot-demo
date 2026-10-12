@@ -13,9 +13,8 @@ Dependabot :dependabot:!
 
 ### Example projects
 
-The repository includes dependency examples for JavaScript (`javascript/`), Ruby
-(`ruby/`), Python (`python/`), and Java (`java/`). Dependabot checks each project
-weekly for dependency updates.
+The repository includes dependency examples for Python (`python/`) and Java
+(`java/`). Dependabot checks both projects weekly for dependency updates.
 
 ### Enabling Security Updates
 
