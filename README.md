@@ -25,14 +25,14 @@ production application.
 
 | Project | Vulnerable dependency | Security fix | Example code migration |
 | --- | --- | --- | --- |
-| Python | PyJWT 1.7.1 (`CVE-2022-29217`) | PyJWT 2.4.0 | `jwt.encode()` now returns text, so remove `.decode("utf-8")`; `jwt.decode()` also needs an explicit algorithm allowlist. |
+| Python | PyJWT 1.7.1 (`CVE-2022-29217`) | PyJWT 2.4.0 fixes this advisory; newer advisories require a newer target | `jwt.encode()` now returns text, so remove `.decode("utf-8")`; `jwt.decode()` also needs an explicit algorithm allowlist. |
 | Java | SnakeYAML 1.33 (`CVE-2022-1471`) | SnakeYAML 2.0 | Pass `LoaderOptions` to the `Constructor` when creating the YAML parser. |
 
 The vulnerable versions are pinned in `python/requirements.txt` and
 `java/pom.xml`; the example call sites are in `python/example.py` and
 `java/src/main/java/com/github/dependabot/DemoConfig.java`. Enable Dependabot
 alerts and security updates to create the alerts and dependency-update PRs, then
-assign an alert to Lightwell to demonstrate the source-code migration.
+assign an alert to an AI coding agent such as Codex to demonstrate the source-code migration.
 
 ### Enabling Security Updates
 
@@ -60,3 +60,17 @@ To enable Dependabot on your fork:
 <img width="917" alt="screenshot showing Dependabot working on Version Updates" src="https://github.com/dependabot/demo/assets/886768/4adf5727-255a-4ae1-97f7-70e94dc1134b">
 
 After a few minutes, you should get some more PRs!
+
+### Running Renovate with GitHub Actions
+
+The `.github/workflows/renovate.yml` workflow runs Renovate daily and can also
+be started manually from the **Actions** tab. It uses the `renovate.json`
+configuration to check only Python requirements and Maven dependencies for
+security updates.
+
+Before the first run, add a repository secret named `RENOVATE_TOKEN`. Use a
+fine-grained token scoped to this repository with the permissions Renovate
+requires, including read access to Dependabot alerts and write access to
+contents, issues, pull requests, and commit statuses. See the
+[Renovate GitHub platform permissions](https://docs.renovatebot.com/modules/platform/github/)
+for the complete permission list.
