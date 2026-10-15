@@ -1,0 +1,95 @@
+name: Codex dependency remediation
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main]
+    paths:
+      - 'python/requirements.txt'
+      - 'java/pom.xml'
+
+permissions: {}
+
+jobs:
+  prepare-patch:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'renovate/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.patch.outputs.changed }}
+    steps:
+      - name: Check out the Renovate PR revision
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Ask Codex to adapt the source code
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          model: gpt-6-luna
+          prompt: |
+            This is a Renovate dependency update pull request. Review the dependency
+            change and the relevant upstream release notes, then update only the
+            application source code needed to remain compatible with the new version
+            or address the reported security issue.
+
+            Renovate owns dependency versions: do not edit dependency manifests or
+            lockfiles. Limit changes to Python files under python/ and Java source
+            files under java/src/. Do not add generated files, build output, or
+            credentials. Run relevant checks that are already available in the
+            repository. If no source change is needed, leave the source unchanged.
+
+      - name: Create a source-only patch
+        id: patch
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git add -N python java/src
+          git diff --binary "$PR_HEAD_SHA" -- python/ java/src/ > "$RUNNER_TEMP/codex.patch"
+          if [ -s "$RUNNER_TEMP/codex.patch" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload the Codex patch
+        if: steps.patch.outputs.changed == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: codex-source-patch
+          path: ${{ runner.temp }}/codex.patch
+          if-no-files-found: error
+          retention-days: 1
+
+  apply-patch:
+    needs: prepare-patch
+    if: needs.prepare-patch.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the exact Renovate PR revision
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Download the Codex patch
+        uses: actions/download-artifact@v8
+        with:
+          name: codex-source-patch
+          path: ${{ runner.temp }}/codex-patch
+
+      - name: Commit the source changes to the Renovate branch
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          git apply --index "$RUNNER_TEMP/codex-patch/codex.patch"
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'Apply Codex dependency remediation'
+          git push origin "HEAD:refs/heads/$PR_HEAD_REF"
