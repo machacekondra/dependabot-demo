@@ -66,7 +66,7 @@ After a few minutes, you should get some more PRs!
 The `.github/workflows/renovate.yml` workflow runs Renovate daily and can also
 be started manually from the **Actions** tab. It uses the `renovate.json`
 configuration to check Maven dependencies for security updates and query the
-Lightwell remediated Maven registry.
+Lightwell remediated Maven registry alongside Maven Central.
 
 Before the first run, add these repository secrets:
 

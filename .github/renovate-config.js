@@ -8,6 +8,7 @@ if (!username || !password) {
 module.exports = {
   hostRules: [
     {
+      hostType: "maven",
       matchHost: "https://packages.redhat.com/lightwell/java/remediated/",
       username,
       password,
