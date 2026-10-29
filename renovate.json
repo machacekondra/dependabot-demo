@@ -5,7 +5,15 @@
     "security:only-security-updates"
   ],
   "enabledManagers": [
-    "pip_requirements",
     "maven"
+  ],
+  "osvVulnerabilityAlerts": true,
+  "packageRules": [
+    {
+      "matchDatasources": ["maven"],
+      "registryUrls": [
+        "https://packages.redhat.com/lightwell/java/remediated/"
+      ]
+    }
   ]
 }

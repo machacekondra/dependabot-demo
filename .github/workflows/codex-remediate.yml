@@ -5,7 +5,6 @@ on:
     types: [opened]
     branches: [main]
     paths:
-      - 'python/requirements.txt'
       - 'java/pom.xml'
 
 permissions: {}
@@ -39,8 +38,8 @@ jobs:
             or address the reported security issue.
 
             Renovate owns dependency versions: do not edit dependency manifests or
-            lockfiles. Limit changes to Python files under python/ and Java source
-            files under java/src/. Do not add generated files, build output, or
+            lockfiles. Limit changes to Java source files under java/src/. Do not
+            add generated files, build output, or
             credentials. Run relevant checks that are already available in the
             repository. If no source change is needed, leave the source unchanged.
 
@@ -49,8 +48,8 @@ jobs:
         env:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          git add -N python java/src
-          git diff --binary "$PR_HEAD_SHA" -- python/ java/src/ > "$RUNNER_TEMP/codex.patch"
+          git add -N java/src
+          git diff --binary "$PR_HEAD_SHA" -- java/src/ > "$RUNNER_TEMP/codex.patch"
           if [ -s "$RUNNER_TEMP/codex.patch" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else

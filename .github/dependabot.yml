@@ -1,11 +1,6 @@
 ---
 version: 2
 registries:
-  lightwell-python:
-    type: python-index
-    url: https://packages.redhat.com/lightwell/python/remediated/simple
-    username: ${{secrets.LIGHTWELL_USERNAME}}
-    password: ${{secrets.LIGHTWELL_TOKEN}}
   lightwell-maven:
     type: maven-repository
     url: https://packages.redhat.com/lightwell/java/remediated/
@@ -13,14 +8,6 @@ registries:
     password: ${{secrets.LIGHTWELL_TOKEN}}
 
 updates:
-  - package-ecosystem: pip
-    directory: "/python"
-    open-pull-requests-limit: 0
-    registries:
-      - lightwell-python
-    insecure-external-code-execution: allow
-    schedule:
-      interval: "weekly"
   - package-ecosystem: maven
     directory: "/java"
     open-pull-requests-limit: 0

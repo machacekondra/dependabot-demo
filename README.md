@@ -13,26 +13,26 @@ Dependabot :dependabot:!
 
 ### Example projects
 
-The repository includes dependency examples for Python (`python/`) and Java
-(`java/`). Dependabot checks both projects weekly for dependency updates.
+The repository includes a Java dependency example (`java/`). Dependabot checks
+it weekly for dependency updates.
 
-### Security updates that need code changes
+### Security updates
 
-These two intentionally vulnerable examples let you try a security update that
-also needs an application-code migration. The sample inputs are local and
-harmless; do not use these pinned dependency versions or parsing patterns in a
-production application.
+Spring Web 5.3.37 is pinned to demonstrate CVE-2024-38809. The sample parses
+benign local `If-Match` and `If-None-Match` values; it does not start a server.
+Do not use this vulnerable dependency version in a production application.
 
-| Project | Vulnerable dependency | Security fix | Example code migration |
+| Project | Vulnerable dependency | Security fix | Remediation |
 | --- | --- | --- | --- |
-| Python | PyJWT 1.7.1 (`CVE-2022-29217`) | PyJWT 2.4.0 fixes this advisory; newer advisories require a newer target | `jwt.encode()` now returns text, so remove `.decode("utf-8")`; `jwt.decode()` also needs an explicit algorithm allowlist. |
-| Java | SnakeYAML 1.33 (`CVE-2022-1471`) | SnakeYAML 2.0 | Pass `LoaderOptions` to the `Constructor` when creating the YAML parser. |
+| Java | Spring Web 5.3.37 (`CVE-2024-38809`) | Spring Web 5.3.38 | Upgrade `spring-web`; no application-code change is required. |
 
-The vulnerable versions are pinned in `python/requirements.txt` and
-`java/pom.xml`; the example call sites are in `python/example.py` and
-`java/src/main/java/com/github/dependabot/DemoConfig.java`. Enable Dependabot
-alerts and security updates to create the alerts and dependency-update PRs, then
-assign an alert to an AI coding agent such as Codex to demonstrate the source-code migration.
+The vulnerable version is pinned in `java/pom.xml`; the example call sites for
+`If-Match` and `If-None-Match` are in
+`java/src/main/java/com/github/dependabot/ConditionalRequestDemo.java`. The
+[advisory](https://github.com/advisories/GHSA-2rmj-mq67-h97g) affects
+applications that parse ETags from these request headers. Enable Dependabot
+alerts and security updates to create the alert and dependency-update PR, then
+assign it to an AI coding agent such as Codex to demonstrate the remediation.
 
 ### Enabling Security Updates
 
@@ -65,12 +65,17 @@ After a few minutes, you should get some more PRs!
 
 The `.github/workflows/renovate.yml` workflow runs Renovate daily and can also
 be started manually from the **Actions** tab. It uses the `renovate.json`
-configuration to check only Python requirements and Maven dependencies for
-security updates.
+configuration to check Maven dependencies for security updates and query the
+Lightwell remediated Maven registry.
 
-Before the first run, add a repository secret named `RENOVATE_TOKEN`. Use a
-fine-grained token scoped to this repository with the permissions Renovate
-requires, including read access to Dependabot alerts and write access to
-contents, issues, pull requests, and commit statuses. See the
+Before the first run, add these repository secrets:
+
+- `RENOVATE_TOKEN`: a fine-grained token scoped to this repository with the
+  permissions Renovate requires, including read access to Dependabot alerts
+  and write access to contents, issues, pull requests, and commit statuses.
+- `LIGHTWELL_USERNAME` and `LIGHTWELL_TOKEN`: credentials for the Lightwell
+  Maven registry.
+
+See the
 [Renovate GitHub platform permissions](https://docs.renovatebot.com/modules/platform/github/)
 for the complete permission list.

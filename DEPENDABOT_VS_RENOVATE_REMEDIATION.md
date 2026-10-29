@@ -1,6 +1,6 @@
 # Dependabot vs. Renovate for vulnerability remediation
 
-**Scope:** this comparison focuses on the workflow we just demonstrated: take a dependency vulnerability, update the dependency, and make any required application-code changes. **Checked:** October 12, 2026.
+**Scope:** this comparison focuses on remediating a dependency vulnerability, including application-code changes when they are required. **Checked:** October 29, 2026.
 
 ## At a glance
 
@@ -14,11 +14,9 @@
 
 ## What the demo showed
 
-This repository's Java example pins SnakeYAML 1.33, affected by [CVE-2022-1471](https://github.com/advisories/GHSA-mjmj-j48q-9wg2). The patched version is 2.0. Updating `java/pom.xml` alone is insufficient: `DemoConfig.java` constructs the parser with `new Constructor(DemoConfig.class)`, and the 2.0 API requires `LoaderOptions` to be passed to the constructor.
+This repository's Java example pins `org.springframework:spring-web` 5.3.37, affected by [CVE-2024-38809](https://github.com/advisories/GHSA-2rmj-mq67-h97g). The vulnerable path parses ETags from `If-Match` and `If-None-Match` request headers; `ConditionalRequestDemo.java` calls the corresponding `HttpHeaders` accessors with harmless local values. Spring's advisory recommends upgrading to the corresponding fixed release, 5.3.38 for the 5.3 line. No application-code change is required for this issue.
 
-The Python sample is another code-migration case: it pins PyJWT 1.7.1 for [CVE-2022-29217](https://github.com/advisories/GHSA-ffqj-6fqr-9h24). Moving to PyJWT 2.x changes `jwt.encode()` to return text, so the old `.decode("utf-8")` call must be removed; decoding should also explicitly allow the expected algorithm. PyJWT 2.4.0 fixes that specific 2022 advisory, but later advisories affect versions below 2.13.0, so use a current secure target when running a live remediation demo ([later advisory](https://github.com/advisories/GHSA-xgmm-8j9v-c9wx)).
-
-With Dependabot, the alert is the starting point. Assigning it to Codex gives the agent the alert context and repository to work in; the prompt can explicitly ask for both the version bump and the `LoaderOptions` migration. GitHub documents that this assignment starts an agent session and opens a draft PR with a proposed fix. This is the workflow that directly demonstrates a vulnerability remediation PR changing both the manifest and application code.
+With Dependabot, the alert is the starting point. Assigning it to Codex gives the agent the alert context and repository to work in; the agent can review the advisory and propose the dependency update. GitHub documents that this assignment starts an agent session and opens a draft PR with a proposed fix. This example needs only a manifest update, while the same workflow can also handle issues that require application-code changes.
 
 With Renovate, its `vulnerabilityAlerts` configuration can produce a security PR from GitHub's vulnerability-alert feed and lets you customize settings such as labels, assignees, and whether to choose the lowest fixed version or a higher one. If the migration is known and repeatable, an administrator could configure an allowed `postUpgradeTasks` command to make it. For a repository-specific, reasoning-based API migration, Renovate's documented vulnerability PR flow does not itself provide the same alert-to-Codex handoff; that would require a separate agent integration or custom automation.
 
