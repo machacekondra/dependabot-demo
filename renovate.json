@@ -12,7 +12,6 @@
     {
       "matchDatasources": ["maven"],
       "registryUrls": [
-        "https://repo.maven.apache.org/maven2/",
         "https://packages.redhat.com/lightwell/java/remediated/"
       ]
     }
