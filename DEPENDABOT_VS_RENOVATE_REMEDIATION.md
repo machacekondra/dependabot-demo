@@ -18,7 +18,7 @@ This repository's Java example pins `org.springframework:spring-web` 5.3.18, an 
 
 With Dependabot, the alert is the starting point. Assigning it to Codex gives the agent the alert context and repository to work in; the agent can review the advisory and propose the dependency update. GitHub documents that this assignment starts an agent session and opens a draft PR with a proposed fix. This example needs only a manifest update, while the same workflow can also handle issues that require application-code changes.
 
-With Renovate, `vulnerabilityAlerts` can produce security PRs from GitHub's vulnerability-alert feed, while the experimental `osvVulnerabilityAlerts` option supports OSV advisories for direct dependencies. This repository uses the OSV advisory and points Maven lookups only at Lightwell's remediated registry. A Lightwell fix is proposed only when the registry exposes the patched artifact and the current version is in the advisory's affected range.
+With Renovate, `vulnerabilityAlerts` can produce security PRs from GitHub's vulnerability-alert feed, while the experimental `osvVulnerabilityAlerts` option supports OSV advisories for direct dependencies. This repository pins the affected base version and points Maven lookups only at Lightwell's remediated registry. The current Renovate OSV integration maps Maven dependencies to the standard `Maven` ecosystem, but the Lightwell advisory is published under `Red Hat Lightwell:Maven`; Renovate cannot match this advisory to the dependency, so this setup does not yet produce a Lightwell OSV security PR. The fixed Lightwell artifact is `5.3.18.rhlw-00010`.
 
 ## Which fits this remediation use case?
 

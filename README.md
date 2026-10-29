@@ -32,8 +32,12 @@ The vulnerable version is pinned in `java/pom.xml`; the example call sites for
 `java/src/main/java/com/github/dependabot/ConditionalRequestDemo.java`. The
 [Lightwell OSV advisory](https://osv.dev/vulnerability/RHLW-2026-a9afa2d7b2973961)
 includes CVE-2024-38809, which affects applications that parse ETags from these
-request headers. Run Renovate from the **Actions** tab to check the Lightwell
-remediated registry for the fixed version.
+request headers. The Maven lookup is restricted to the Lightwell remediated
+registry. However, Renovate currently maps Maven dependencies to OSV's standard
+`Maven` ecosystem, while this advisory uses Lightwell's custom
+`Red Hat Lightwell:Maven` ecosystem. Renovate therefore cannot match this
+advisory to the dependency, so the current workflow will not open a security PR
+for it. The Lightwell fixed version is `5.3.18.rhlw-00010`.
 
 ### Enabling Security Updates
 
