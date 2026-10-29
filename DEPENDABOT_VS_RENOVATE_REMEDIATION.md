@@ -14,11 +14,11 @@
 
 ## What the demo showed
 
-This repository's Java example pins `org.springframework:spring-web` 5.3.37, affected by [CVE-2024-38809](https://github.com/advisories/GHSA-2rmj-mq67-h97g). The vulnerable path parses ETags from `If-Match` and `If-None-Match` request headers; `ConditionalRequestDemo.java` calls the corresponding `HttpHeaders` accessors with harmless local values. Spring's advisory recommends upgrading to the corresponding fixed release, 5.3.38 for the 5.3 line. No application-code change is required for this issue.
+This repository's Java example pins `org.springframework:spring-web` 5.3.18, an affected base version in the [Lightwell OSV advisory RHLW-2026-a9afa2d7b2973961](https://osv.dev/vulnerability/RHLW-2026-a9afa2d7b2973961). The advisory includes CVE-2024-38809; `ConditionalRequestDemo.java` calls the ETag parsing accessors for `If-Match` and `If-None-Match` with harmless local values. Lightwell's fixed build is `5.3.18.rhlw-00010`. This is a dependency-only remediation.
 
 With Dependabot, the alert is the starting point. Assigning it to Codex gives the agent the alert context and repository to work in; the agent can review the advisory and propose the dependency update. GitHub documents that this assignment starts an agent session and opens a draft PR with a proposed fix. This example needs only a manifest update, while the same workflow can also handle issues that require application-code changes.
 
-With Renovate, its `vulnerabilityAlerts` configuration can produce a security PR from GitHub's vulnerability-alert feed and lets you customize settings such as labels, assignees, and whether to choose the lowest fixed version or a higher one. If the migration is known and repeatable, an administrator could configure an allowed `postUpgradeTasks` command to make it. For a repository-specific, reasoning-based API migration, Renovate's documented vulnerability PR flow does not itself provide the same alert-to-Codex handoff; that would require a separate agent integration or custom automation.
+With Renovate, `vulnerabilityAlerts` can produce security PRs from GitHub's vulnerability-alert feed, while the experimental `osvVulnerabilityAlerts` option supports OSV advisories for direct dependencies. This repository uses the OSV advisory and points Maven lookups only at Lightwell's remediated registry. A Lightwell fix is proposed only when the registry exposes the patched artifact and the current version is in the advisory's affected range.
 
 ## Which fits this remediation use case?
 

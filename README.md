@@ -18,21 +18,22 @@ it weekly for dependency updates.
 
 ### Security updates
 
-Spring Web 5.3.37 is pinned to demonstrate CVE-2024-38809. The sample parses
-benign local `If-Match` and `If-None-Match` values; it does not start a server.
-Do not use this vulnerable dependency version in a production application.
+Spring Web 5.3.18 is pinned to match the affected version in Lightwell's OSV
+advisory. The sample parses benign local `If-Match` and `If-None-Match` values;
+it does not start a server. Do not use this vulnerable dependency version in a
+production application.
 
 | Project | Vulnerable dependency | Security fix | Remediation |
 | --- | --- | --- | --- |
-| Java | Spring Web 5.3.37 (`CVE-2024-38809`) | Spring Web 5.3.38 | Upgrade `spring-web`; no application-code change is required. |
+| Java | `spring-web` 5.3.18 (`RHLW-2026-a9afa2d7b2973961`) | `5.3.18.rhlw-00010` | Upgrade to the Lightwell remediated build; no application-code change is required. |
 
 The vulnerable version is pinned in `java/pom.xml`; the example call sites for
 `If-Match` and `If-None-Match` are in
 `java/src/main/java/com/github/dependabot/ConditionalRequestDemo.java`. The
-[advisory](https://github.com/advisories/GHSA-2rmj-mq67-h97g) affects
-applications that parse ETags from these request headers. Enable Dependabot
-alerts and security updates to create the alert and dependency-update PR, then
-assign it to an AI coding agent such as Codex to demonstrate the remediation.
+[Lightwell OSV advisory](https://osv.dev/vulnerability/RHLW-2026-a9afa2d7b2973961)
+includes CVE-2024-38809, which affects applications that parse ETags from these
+request headers. Run Renovate from the **Actions** tab to check the Lightwell
+remediated registry for the fixed version.
 
 ### Enabling Security Updates
 
