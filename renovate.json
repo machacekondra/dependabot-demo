@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>lightwell-experience/renovate-config:java-remediated#1.0.0"
+    "github>lightwell-experience/renovate-config:java-remediated#1.0.2"
   ],
   "ignoreDeps": ["com.github.dependabot:java-demo"]
 }
